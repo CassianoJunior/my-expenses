@@ -1,6 +1,10 @@
+import { useNavigation } from '@react-navigation/native';
 import { Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Test = () => {
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -12,6 +16,13 @@ const Test = () => {
       }}
     >
       <Text>Changed</Text>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Home');
+        }}
+      >
+        <Text>Go to home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
