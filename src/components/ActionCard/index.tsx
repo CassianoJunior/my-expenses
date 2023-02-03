@@ -1,8 +1,10 @@
 import { PencilSimpleLine, XCircle } from 'phosphor-react-native';
-import { TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { Badge } from '../Badge';
-import { Box, Container } from './style';
+import { Container, Content, IconsBox } from './style';
+
+const profitImage = require('../../assets/lucro.png');
 
 export type ActionCardProps = {
   id: number;
@@ -16,24 +18,41 @@ export interface IActionCard {
 }
 
 const ActionCard = ({ action }: IActionCard) => {
-  const { colors, spacings } = useTheme();
+  const { colors, spacings, sizes } = useTheme();
 
   return (
     <Container>
-      <Box>
+      <IconsBox>
         <TouchableOpacity>
-          <PencilSimpleLine size={24} weight={'bold'} color={colors.brand} />
+          <PencilSimpleLine
+            size={24}
+            weight={'bold'}
+            color={colors.brand.primary}
+          />
         </TouchableOpacity>
         <TouchableOpacity>
           <XCircle
             size={24}
             weight={'bold'}
-            color={colors.brand}
+            color={colors.brand.primary}
             style={{ marginLeft: spacings.regular }}
           />
         </TouchableOpacity>
-      </Box>
-      <Badge />
+      </IconsBox>
+      <Content>
+        <Badge date={action.date} />
+        <View style={{ display: 'flex', flexDirection: 'row' }}>
+          <Image source={profitImage} />
+          <View
+            style={{ marginLeft: spacings.regular, justifyContent: 'center' }}
+          >
+            <Text style={{ fontSize: sizes.regular }}>{action.name}</Text>
+            <Text style={{ fontSize: sizes.medium }}>
+              R$ {action.value.toFixed(2)}
+            </Text>
+          </View>
+        </View>
+      </Content>
     </Container>
   );
 };

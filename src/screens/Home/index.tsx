@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Box, Container, Title } from './style';
+import { Box, ButtonGroup, Container } from './style';
 
+import { ChartLine, PlusCircle } from 'phosphor-react-native';
 import data from '../../../assets/MOCK_DATA.json';
 import { ActionCard } from '../../components/ActionCard';
+import { ButtonIcon } from '../../components/ButtonIcon';
+import theme from '../../theme';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -14,14 +16,17 @@ const Home = () => {
         {data.map((action) => (
           <ActionCard action={action} key={action.id} />
         ))}
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Test');
-          }}
-        >
-          <Title>Go to Test</Title>
-        </TouchableOpacity>
       </Box>
+      <ButtonGroup>
+        <ButtonIcon
+          title="View graph"
+          icon={<ChartLine size={24} color={theme.colors.brand.primary} />}
+        />
+        <ButtonIcon
+          title="Add new action"
+          icon={<PlusCircle size={24} color={theme.colors.brand.primary} />}
+        />
+      </ButtonGroup>
     </Container>
   );
 };

@@ -1,7 +1,9 @@
 export default {
   colors: {
-    brand: '#f55d5d',
-
+    brand: {
+      primary: '#f55d5d',
+      secondary: '#575757',
+    },
     background: {
       primary: '#242424',
       secondary: '#343434',
@@ -18,7 +20,7 @@ export default {
     bold: 'Roboto_700Bold',
   },
   spacings: {
-    extraThin: 1,
+    extraThin: 2,
     thin: 4,
     regular: 8,
     medium: 12,

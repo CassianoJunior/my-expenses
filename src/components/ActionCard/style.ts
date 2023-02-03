@@ -12,7 +12,7 @@ export const Container = styled.TouchableOpacity`
   padding: ${theme.spacings.medium}px;
 `;
 
-export const Box = styled.View`
+export const IconsBox = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -26,4 +26,10 @@ export const Title = styled.Text`
   font-size: ${theme.sizes.medium}px;
   font-weight: bold;
   color: #000;
+`;
+
+export const Content = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;

@@ -15,7 +15,7 @@ const AppRoutes = () => {
         options={{
           title: 'My actions',
           headerStyle: {
-            backgroundColor: colors.brand,
+            backgroundColor: colors.brand.primary,
           },
         }}
       />
