@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTheme } from 'styled-components';
 import { Home } from '../screens/Home';
-import { Test } from '../screens/Test';
+import { NewAction } from '../screens/NewAction';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +19,16 @@ const AppRoutes = () => {
           },
         }}
       />
-      <Stack.Screen name="Test" component={Test} />
+      <Stack.Screen
+        name="NewAction"
+        component={NewAction}
+        options={{
+          title: 'Add new action',
+          headerStyle: {
+            backgroundColor: colors.brand.primary,
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };

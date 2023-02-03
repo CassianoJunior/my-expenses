@@ -1,15 +1,15 @@
-import { Text } from 'react-native';
+import { Text, TouchableOpacityProps } from 'react-native';
 import theme from '../../theme';
 import { Container } from './style';
 
-interface IButtonIconProps {
+interface IButtonIconProps extends TouchableOpacityProps {
   title: string;
   icon?: JSX.Element;
 }
 
-const ButtonIcon = ({ title, icon }: IButtonIconProps) => {
+const ButtonIcon = ({ title, icon, ...rest }: IButtonIconProps) => {
   return (
-    <Container>
+    <Container {...rest}>
       {icon}
       <Text
         style={{

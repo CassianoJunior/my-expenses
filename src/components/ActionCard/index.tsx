@@ -4,7 +4,7 @@ import { useTheme } from 'styled-components/native';
 import { Badge } from '../Badge';
 import { Container, Content, IconsBox } from './style';
 
-const profitImage = require('../../assets/lucro.png');
+const image = require('../../assets/calculo_r.png');
 
 export type ActionCardProps = {
   id: number;
@@ -42,7 +42,7 @@ const ActionCard = ({ action }: IActionCard) => {
       <Content>
         <Badge date={action.date} />
         <View style={{ display: 'flex', flexDirection: 'row' }}>
-          <Image source={profitImage} />
+          <Image source={image} />
           <View
             style={{ marginLeft: spacings.regular, justifyContent: 'center' }}
           >

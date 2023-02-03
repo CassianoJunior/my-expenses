@@ -25,6 +25,7 @@ const Home = () => {
         <ButtonIcon
           title="Add new action"
           icon={<PlusCircle size={24} color={theme.colors.brand.primary} />}
+          onPress={() => navigation.navigate('NewAction')}
         />
       </ButtonGroup>
     </Container>
