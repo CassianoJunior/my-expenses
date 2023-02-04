@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export type ActionType = {
   id: string;
@@ -31,64 +31,65 @@ const ActionProvider = ({ children }: ActionProviderProps) => {
   const [actions, setActions] = useState<ActionType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    // AsyncStorage.removeItem('@myActions:actions');
+    fetchActions();
+  }, []);
+
   const fetchActions = async () => {
     setIsLoading(true);
-    try {
-      const actionsString = await AsyncStorage.getItem('@myActions:actions');
-      if (actionsString) {
-        const actions = JSON.parse(actionsString) as ActionType[];
-        setActions(actions);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoading(false);
+    await AsyncStorage.getItem('@myActions:actions')
+      .then((res) => {
+        const actionsStoraged: ActionType[] = res ? JSON.parse(res) : [];
+        actionsStoraged.forEach((action) => {
+          action.date = new Date(action.date);
+        });
+
+        setActions(actionsStoraged);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
   };
 
   const getAction = (id: string) => {
     const [action] = actions.filter((action) => action.id === id);
+    setIsLoading(false);
     return action;
   };
 
   const addAction = (action: ActionType) => {
     setIsLoading(true);
-
-    console.log('Before', actions);
-    setActions([action]);
-    console.log('After', actions);
-
-    setIsLoading(false);
-
-    return syncActions();
+    setTimeout(() => {
+      syncActions([...actions, action]);
+    }, 1000);
   };
 
   const editAction = (action: ActionType) => {
-    setActions((oldActions) =>
-      oldActions.map((oldAction) =>
-        oldAction.id === action.id ? action : oldAction
-      )
-    );
+    setIsLoading(true);
+    setTimeout(() => {
+      const actionsEdited = [
+        ...actions.filter((oldAction) => oldAction.id !== action.id),
+        action,
+      ];
 
-    return syncActions();
+      syncActions(actionsEdited);
+    }, 1000);
   };
 
   const deleteAction = (id: string) => {
-    setActions((oldActions) =>
-      oldActions.filter((oldAction) => oldAction.id !== id)
-    );
+    setIsLoading(true);
+    setTimeout(() => {
+      const actionsEdited = actions.filter((action) => action.id !== id);
 
-    return syncActions();
+      syncActions(actionsEdited);
+    }, 1000);
   };
 
-  const syncActions = async () => {
-    try {
-      setIsLoading(true);
-      await AsyncStorage.setItem('@myActions:actions', JSON.stringify(actions));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const syncActions = async (actions: ActionType[]) => {
+    console.log(actions);
+    await AsyncStorage.setItem('@myActions:actions', JSON.stringify(actions))
+      .then((res) => setActions(actions))
+      .finally(() => setIsLoading(false));
   };
 
   const contextValue = {

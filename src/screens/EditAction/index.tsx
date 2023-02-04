@@ -1,9 +1,10 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import moment from 'moment';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text } from 'react-native';
+import { StatusBar, Text } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import { Masks } from 'react-native-mask-input';
-import uuid from 'react-native-uuid';
 import { Loading } from '../../components/Loading';
 import { ActionType, useActionContext } from '../../contexts/ActionContext';
 import theme from '../../theme';
@@ -25,29 +26,26 @@ const EditAction = () => {
   const route = useRoute();
   const { id } = route.params as EditActionRouteParams;
 
-  const dateDay =
-    actionToEdit?.date && actionToEdit?.date.getDate().toString().length > 1
-      ? `${actionToEdit?.date.getDate().toString()}`
-      : `0${actionToEdit?.date.getDate().toString()}`;
+  const { control, handleSubmit, formState, reset, getValues } =
+    useForm<FormData>({
+      defaultValues: {
+        actionName: '',
+        value: '',
+        date: '',
+      },
+    });
 
-  const dateMonth =
-    actionToEdit?.date && actionToEdit?.date.getMonth().toString().length > 1
-      ? `${actionToEdit?.date.getMonth() + 1}`
-      : actionToEdit?.date && `0${actionToEdit?.date.getMonth() + 1}`;
-  const dateYear = actionToEdit?.date.getFullYear().toString();
-
-  const { control, handleSubmit, formState, reset } = useForm<FormData>({
-    defaultValues: {
-      actionName: actionToEdit?.name,
-      value: actionToEdit?.value.toString(),
-      date: `${dateDay}/${dateMonth}/${dateYear}`,
-    },
-  });
-
-  const { isLoading, addAction, getAction } = useActionContext();
+  const { isLoading, editAction, getAction, setIsLoading } = useActionContext();
   const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: actionToEdit?.name,
+    });
+  }, [navigation, actionToEdit]);
+
   const onSubmit = async ({ actionName, value, date }: FormData) => {
+    const { dirtyFields } = formState;
     const valueFormatted = value
       .replace(/\./g, '')
       .replace(',', '.')
@@ -57,20 +55,28 @@ const EditAction = () => {
     const dateFormatted = `${dateStringArray[1]}/${dateStringArray[0]}/${dateStringArray[2]}`;
 
     const action = {
-      id: uuid.v4(),
-      name: actionName,
-      value: Number(valueFormatted),
-      date: new Date(dateFormatted),
+      id: actionToEdit?.id,
+      name: dirtyFields.actionName ? actionName : actionToEdit?.name,
+      value: dirtyFields.value ? Number(valueFormatted) : actionToEdit?.value,
+      date: dirtyFields.date ? new Date(dateFormatted) : actionToEdit?.date,
     } as ActionType;
 
-    return addAction(action);
+    return editAction(action);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     setActionToEdit(getAction(id));
 
     if (formState.isSubmitSuccessful) {
       reset({ value: '', date: '', actionName: '' });
+      showMessage({
+        message: 'Action edited!',
+        description: 'Your action was edited successfully!',
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'success',
+      });
       navigation.navigate('Home');
     }
   }, [formState, reset]);
@@ -80,15 +86,12 @@ const EditAction = () => {
       {isLoading && <Loading />}
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Name"
+            placeholder={actionToEdit?.name}
             autoFocus
           />
         )}
@@ -109,16 +112,13 @@ const EditAction = () => {
 
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             keyboardType={'number-pad'}
-            placeholder="Value"
+            placeholder={actionToEdit?.value.toString()}
             mask={Masks.BRL_CURRENCY}
           />
         )}
@@ -138,16 +138,15 @@ const EditAction = () => {
 
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <Input
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             keyboardType={'number-pad'}
-            placeholder="Date (dd/mm/yyyy)"
+            placeholder={moment(actionToEdit?.date)
+              .format('DD/MM/YYYY')
+              .toString()}
             mask={Masks.DATE_DDMMYYYY}
           />
         )}
@@ -165,7 +164,10 @@ const EditAction = () => {
         </Text>
       )}
 
-      <SubmitButton onPress={handleSubmit(onSubmit)}>
+      <SubmitButton
+        onPress={handleSubmit(onSubmit)}
+        disabled={!formState.isDirty}
+      >
         <Text
           style={{
             fontSize: theme.sizes.regular,

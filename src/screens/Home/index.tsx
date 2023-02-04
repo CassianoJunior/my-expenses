@@ -1,6 +1,5 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { ChartLine, MaskSad, PlusCircle } from 'phosphor-react-native';
-import { useCallback } from 'react';
 import { FlatList, Text } from 'react-native';
 import { ActionCard } from '../../components/ActionCard';
 import { ButtonIcon } from '../../components/ButtonIcon';
@@ -12,15 +11,9 @@ import { Box, ButtonGroup, Container, Span } from './style';
 const Home = () => {
   const navigation = useNavigation();
 
-  const { isLoading, actions, fetchActions } = useActionContext();
+  const { isLoading, actions } = useActionContext();
 
-  useFocusEffect(
-    useCallback(() => {
-      // AsyncStorage.removeItem('@myActions:actions');
-
-      fetchActions();
-    }, [])
-  );
+  console.log(actions);
 
   return (
     <Container>

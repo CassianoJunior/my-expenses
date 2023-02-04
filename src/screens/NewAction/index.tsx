@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Text } from 'react-native';
+import { StatusBar, Text } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import { Masks } from 'react-native-mask-input';
 import uuid from 'react-native-uuid';
 import { Loading } from '../../components/Loading';
@@ -18,7 +19,7 @@ type FormData = {
 const NewAction = () => {
   const { control, handleSubmit, formState, reset } = useForm<FormData>();
 
-  const { isLoading, addAction, getAction } = useActionContext();
+  const { isLoading, addAction } = useActionContext();
   const navigation = useNavigation();
 
   const onSubmit = async ({ actionName, value, date }: FormData) => {
@@ -43,6 +44,13 @@ const NewAction = () => {
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({ value: '', date: '', actionName: '' });
+      showMessage({
+        message: 'Action added!',
+        description: 'Your action was added successfully!',
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'success',
+      });
       navigation.navigate('Home');
     }
   }, [formState, reset]);

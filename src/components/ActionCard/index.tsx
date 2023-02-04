@@ -26,7 +26,7 @@ const ActionCard = ({ id, name, value, date, ...rest }: ActionCardProps) => {
   const { colors, spacings, sizes } = useTheme();
 
   const navigation = useNavigation();
-  const { deleteAction, actions } = useActionContext();
+  const { deleteAction } = useActionContext();
 
   const handleDeleteAction = (id: string) => () => {
     Alert.alert('Delete', 'Are you sure you want to delete this action?', [
