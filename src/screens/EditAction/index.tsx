@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Text } from 'react-native';
 import { Masks } from 'react-native-mask-input';
@@ -15,8 +15,34 @@ type FormData = {
   date: string;
 };
 
-const NewAction = () => {
-  const { control, handleSubmit, formState, reset } = useForm<FormData>();
+type EditActionRouteParams = {
+  id: string;
+};
+
+const EditAction = () => {
+  const [actionToEdit, setActionToEdit] = useState<ActionType>();
+
+  const route = useRoute();
+  const { id } = route.params as EditActionRouteParams;
+
+  const dateDay =
+    actionToEdit?.date && actionToEdit?.date.getDate().toString().length > 1
+      ? `${actionToEdit?.date.getDate().toString()}`
+      : `0${actionToEdit?.date.getDate().toString()}`;
+
+  const dateMonth =
+    actionToEdit?.date && actionToEdit?.date.getMonth().toString().length > 1
+      ? `${actionToEdit?.date.getMonth() + 1}`
+      : actionToEdit?.date && `0${actionToEdit?.date.getMonth() + 1}`;
+  const dateYear = actionToEdit?.date.getFullYear().toString();
+
+  const { control, handleSubmit, formState, reset } = useForm<FormData>({
+    defaultValues: {
+      actionName: actionToEdit?.name,
+      value: actionToEdit?.value.toString(),
+      date: `${dateDay}/${dateMonth}/${dateYear}`,
+    },
+  });
 
   const { isLoading, addAction, getAction } = useActionContext();
   const navigation = useNavigation();
@@ -41,6 +67,8 @@ const NewAction = () => {
   };
 
   useEffect(() => {
+    setActionToEdit(getAction(id));
+
     if (formState.isSubmitSuccessful) {
       reset({ value: '', date: '', actionName: '' });
       navigation.navigate('Home');
@@ -144,11 +172,11 @@ const NewAction = () => {
             fontWeight: 'bold',
           }}
         >
-          Add action
+          Edit this action
         </Text>
       </SubmitButton>
     </Container>
   );
 };
 
-export { NewAction };
+export { EditAction };

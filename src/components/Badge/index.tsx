@@ -11,38 +11,20 @@ import {
 } from './style';
 
 interface IBadgeProps {
-  date: string;
+  date: Date;
 }
 
 const Badge = ({ date }: IBadgeProps) => {
-  const [month, day, year] = date
-    .split('/')
-    .map((item: string) => Number(item));
-
-  const getMonthAbbreviations = (month: number) => {
-    const monthNames = [
-      'Jan',
-      'Fev',
-      'Mar',
-      'Abr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Set',
-      'Out',
-      'Nov',
-      'Dez',
-    ];
-
-    return monthNames[month - 1];
-  };
+  const [, month, day, year] = date
+    .toDateString()
+    .split(' ')
+    .map((item: string, index) => (index !== 1 ? Number(item) : item));
 
   return (
     <Container>
       <RightBadge>
         <View>
-          <MonthText>{getMonthAbbreviations(month)}</MonthText>
+          <MonthText>{month}</MonthText>
         </View>
         <View>
           <DayText>{day}</DayText>

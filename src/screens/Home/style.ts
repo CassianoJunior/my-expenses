@@ -29,5 +29,10 @@ export const ButtonGroup = styled.View`
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
-  margin-bottom: ${theme.spacings.large}px;
+  margin: ${theme.spacings.large}px 0;
+`;
+
+export const Span = styled.Text`
+  color: ${theme.colors.brand.primary};
+  font-weight: bold;
 `;
