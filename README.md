@@ -2,14 +2,14 @@
 > Simple application to manage your finances
 
 # 🛠️Technologies
-  - React Native with EXPO
-  - TypesScript
-  - Context-API
-  - Axios
-  - React Hook Form
-  - React Native Chart Kit
-  - Styled components
-  - Async Storage
+  - [React Native with EXPO](https://expo.dev)
+  - [TypesScript](https://www.typescriptlang.org)
+  - [Context-API](https://reactjs.org/docs/context.html)
+  - [Axios](https://www.npmjs.com/package/axios)
+  - [React Hook Form](https://react-hook-form.com)
+  - [React Native Chart Kit](https://github.com/indiespirit/react-native-chart-kit)
+  - [Styled components](https://styled-components.com)
+  - [Async Storage](https://react-native-async-storage.github.io/async-storage/)
 
 # 📱Demo video
 
