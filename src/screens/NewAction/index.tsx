@@ -28,7 +28,10 @@ const NewAction = () => {
     const formDate = new Date(
       date.replace(/\//g, '-').split('-').reverse().join('-')
     );
-    if (formDate < new Date()) {
+    const now = new Date();
+    const today = new Date(now.setDate(now.getDate() - 1));
+    const isPreviuosly = formDate < today;
+    if (isPreviuosly) {
       showMessage({
         message: 'Invalid date!',
         description: 'The date must be greater than today!',
