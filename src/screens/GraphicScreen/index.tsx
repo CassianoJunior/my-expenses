@@ -38,7 +38,7 @@ const GraphicScreen = () => {
           ],
         }}
         width={Dimensions.get('window').width - 20}
-        height={220}
+        height={320}
         chartConfig={{
           backgroundGradientFrom: theme.colors.background.primary,
           backgroundGradientTo: theme.colors.background.primary,

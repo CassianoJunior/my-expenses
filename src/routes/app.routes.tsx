@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTheme } from 'styled-components';
+import { FilterButton } from '../components/FilterButton';
 import { EditAction } from '../screens/EditAction';
 import { GraphicScreen } from '../screens/GraphicScreen';
 import { Home } from '../screens/Home';
@@ -19,6 +20,7 @@ const AppRoutes = () => {
           headerStyle: {
             backgroundColor: colors.brand.primary,
           },
+          headerRight: () => <FilterButton />,
         }}
       />
       <Stack.Screen

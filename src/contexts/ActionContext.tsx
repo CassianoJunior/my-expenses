@@ -10,6 +10,7 @@ export type ActionType = {
 
 export type ActionContextData = {
   actions: ActionType[];
+  changeSortType: (sortValue: SortValues, actions: ActionType[]) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   fetchActions: () => void;
@@ -18,6 +19,12 @@ export type ActionContextData = {
   editAction: (action: ActionType) => void;
   deleteAction: (id: string) => void;
 };
+
+export type SortValues =
+  | 'ascending-date'
+  | 'descending-date'
+  | 'ascending-value'
+  | 'descending-value';
 
 export const ActionContext = createContext<ActionContextData | undefined>(
   undefined
@@ -30,9 +37,9 @@ type ActionProviderProps = {
 const ActionProvider = ({ children }: ActionProviderProps) => {
   const [actions, setActions] = useState<ActionType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [sortValue, setSortValue] = useState<SortValues>('ascending-date');
 
   useEffect(() => {
-    // AsyncStorage.removeItem('@myActions:actions');
     fetchActions();
   }, []);
 
@@ -86,14 +93,41 @@ const ActionProvider = ({ children }: ActionProviderProps) => {
   };
 
   const syncActions = async (actions: ActionType[]) => {
-    console.log(actions);
+    setActions(actions);
     await AsyncStorage.setItem('@myActions:actions', JSON.stringify(actions))
-      .then((res) => setActions(actions))
+      .then((res) => {
+        return changeSortType(sortValue, actions);
+      })
       .finally(() => setIsLoading(false));
+  };
+
+  const changeSortType = (type: SortValues, actions: ActionType[]) => {
+    const actionsCopy = [...actions];
+    switch (type) {
+      case 'ascending-date':
+        setSortValue('ascending-date');
+        actionsCopy.sort((a, b) => a.date.getTime() - b.date.getTime());
+        return setActions(actionsCopy);
+      case 'descending-date':
+        setSortValue('descending-date');
+        actionsCopy.sort((a, b) => b.date.getTime() - a.date.getTime());
+        return setActions(actionsCopy);
+      case 'ascending-value':
+        setSortValue('ascending-value');
+        actionsCopy.sort((a, b) => a.value - b.value);
+        return setActions(actionsCopy);
+      case 'descending-value':
+        setSortValue('descending-value');
+        actionsCopy.sort((a, b) => b.value - a.value);
+        return setActions(actionsCopy);
+      default:
+        return setActions(actionsCopy);
+    }
   };
 
   const contextValue = {
     actions,
+    changeSortType,
     isLoading,
     setIsLoading,
     fetchActions,
