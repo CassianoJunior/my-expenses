@@ -5,6 +5,7 @@ import { StatusBar, Text } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { Masks } from 'react-native-mask-input';
 import uuid from 'react-native-uuid';
+import { getHolidays } from '../../api';
 import { Loading } from '../../components/Loading';
 import { ActionType, useActionContext } from '../../contexts/ActionContext';
 import theme from '../../theme';
@@ -17,12 +18,62 @@ type FormData = {
 };
 
 const NewAction = () => {
-  const { control, handleSubmit, formState, reset } = useForm<FormData>();
+  const { control, handleSubmit, formState, reset, setError } =
+    useForm<FormData>();
 
   const { isLoading, addAction } = useActionContext();
   const navigation = useNavigation();
 
+  const validateDate = async (date: string) => {
+    const formDate = new Date(
+      date.replace(/\//g, '-').split('-').reverse().join('-')
+    );
+    if (formDate < new Date()) {
+      showMessage({
+        message: 'Invalid date!',
+        description: 'The date must be greater than today!',
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'danger',
+      });
+
+      return false;
+    }
+
+    const holidays = await getHolidays(date);
+    const dateFormatted = date
+      .replace(/\//g, '-')
+      .split('-')
+      .reverse()
+      .join('-');
+
+    const holiday = holidays.find((holiday) => holiday.date === dateFormatted);
+
+    if (holiday) {
+      showMessage({
+        message: 'Invalid date!',
+        description: `${holiday?.name} is a holiday!`,
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'danger',
+      });
+
+      return false;
+    }
+
+    return true;
+  };
+
   const onSubmit = async ({ actionName, value, date }: FormData) => {
+    const isValidDate = await validateDate(date);
+    if (!isValidDate) {
+      setError('date', {
+        type: 'manual',
+        message: 'Invalid date!',
+      });
+      return;
+    }
+
     const valueFormatted = value
       .replace(/\./g, '')
       .replace(',', '.')
@@ -141,7 +192,7 @@ const NewAction = () => {
             paddingBottom: theme.spacings.regular,
           }}
         >
-          Date is required!
+          Valid date is required!
         </Text>
       )}
 

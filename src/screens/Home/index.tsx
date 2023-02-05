@@ -13,8 +13,6 @@ const Home = () => {
 
   const { isLoading, actions } = useActionContext();
 
-  console.log(actions);
-
   return (
     <Container>
       {isLoading ? (

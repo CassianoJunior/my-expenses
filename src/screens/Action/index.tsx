@@ -14,11 +14,12 @@ const Action = () => {
   const route = useRoute();
   const { id } = route.params as ActionRouteParams;
 
-  const { getAction, isLoading } = useActionContext();
+  const { getAction, isLoading, setIsLoading } = useActionContext();
 
   const [action, setAction] = useState<ActionType>();
 
   useEffect(() => {
+    setIsLoading(true);
     const action = getAction(id);
     setAction(action);
   }, []);
