@@ -49,7 +49,6 @@ const EditAction = () => {
     const formDate = new Date(
       date.replace(/\//g, '-').split('-').reverse().join('-')
     );
-    console.log(formDate, new Date());
     const isPreviuosly = formDate < new Date();
     if (isPreviuosly) {
       showMessage({

@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTheme } from 'styled-components';
-import { Action } from '../screens/Action';
 import { EditAction } from '../screens/EditAction';
+import { GraphicScreen } from '../screens/GraphicScreen';
 import { Home } from '../screens/Home';
 import { NewAction } from '../screens/NewAction';
 
@@ -44,15 +44,15 @@ const AppRoutes = () => {
         }}
       />
       <Stack.Screen
-        name="Action"
-        component={Action}
-        options={({ route }) => ({
-          title: route.params?.name,
+        name="GraphicScreen"
+        component={GraphicScreen}
+        options={{
+          title: 'Graphic',
+          headerTitleAlign: 'center',
           headerStyle: {
             backgroundColor: colors.brand.primary,
           },
-          headerTitleAlign: 'center',
-        })}
+        }}
       />
     </Stack.Navigator>
   );

@@ -4,7 +4,7 @@ export declare global {
       Home: undefined;
       NewAction: undefined;
       EditAction: { id: string };
-      Action: { id: string; name: string };
+      GraphicScreen: undefined;
     }
   }
 }

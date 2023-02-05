@@ -31,12 +31,6 @@ const Home = () => {
                   value={value}
                   date={date}
                   key={id}
-                  onPress={() =>
-                    navigation.navigate('Action', {
-                      id: id,
-                      name: name,
-                    })
-                  }
                 />
               )}
             ></FlatList>
@@ -46,6 +40,7 @@ const Home = () => {
             <ButtonIcon
               title="View graph"
               icon={<ChartLine size={24} color={theme.colors.brand.primary} />}
+              onPress={() => navigation.navigate('GraphicScreen')}
             />
             <ButtonIcon
               title="Add new action"
