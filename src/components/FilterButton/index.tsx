@@ -3,7 +3,7 @@ import { Alert, TouchableOpacity } from 'react-native';
 import { useActionContext } from '../../contexts/ActionContext';
 
 const FilterButton = () => {
-  const { changeSortType, actions } = useActionContext();
+  const { changeSortType, actions, fetchActions } = useActionContext();
 
   const filterAlert = () => {
     Alert.alert(

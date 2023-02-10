@@ -1,6 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { ChartLine, MaskSad, PlusCircle } from 'phosphor-react-native';
-import { FlatList, Text } from 'react-native';
+import { useCallback } from 'react';
+import { FlatList, RefreshControl, Text } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 import { ActionCard } from '../../components/ActionCard';
 import { ButtonIcon } from '../../components/ButtonIcon';
 import { Loading } from '../../components/Loading';
@@ -11,7 +13,22 @@ import { Box, ButtonGroup, Container, Span } from './style';
 const Home = () => {
   const navigation = useNavigation();
 
-  const { isLoading, actions } = useActionContext();
+  const { isLoading, actions, fetchActions } = useActionContext();
+
+  const timing = useSharedValue(300);
+
+  const onRefresh = useCallback(() => {
+    fetchActions();
+
+    timing.value = 300;
+  }, []);
+
+  const calculateTimingDelay = (id: string) => {
+    const index = actions.findIndex((action) => action.id === id);
+    const delay = timing.value + 100 * (index + 1);
+
+    return delay;
+  };
 
   return (
     <Container>
@@ -24,18 +41,23 @@ const Home = () => {
           ) : (
             <FlatList
               data={actions}
-              renderItem={({ item: { date, id, name, value } }) => (
-                <ActionCard
-                  id={id}
-                  name={name}
-                  value={value}
-                  date={date}
-                  key={id}
-                />
-              )}
-            ></FlatList>
+              renderItem={({ item: { date, id, name, value } }) => {
+                return (
+                  <ActionCard
+                    id={id}
+                    name={name}
+                    value={value}
+                    date={date}
+                    key={id}
+                    animationDelay={calculateTimingDelay(id)}
+                  />
+                );
+              }}
+              refreshControl={
+                <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+              }
+            />
           )}
-
           <ButtonGroup>
             <ButtonIcon
               title="View graph"

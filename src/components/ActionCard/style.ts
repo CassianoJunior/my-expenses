@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import theme from '../../theme';
 
-export const Container = styled.TouchableOpacity`
+export const Container = styled.View`
   background-color: aliceblue;
   display: flex;
   height: ${theme.spacings.medium * 10}px;
