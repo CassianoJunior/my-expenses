@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
+import { getHolidays } from '../api';
 
 export type ActionType = {
   id: string;
@@ -18,6 +21,7 @@ export type ActionContextData = {
   addAction: (action: ActionType) => void;
   editAction: (action: ActionType) => void;
   deleteAction: (id: string) => void;
+  validateDate: (date: string) => Promise<boolean>;
 };
 
 export type SortValues =
@@ -125,6 +129,49 @@ const ActionProvider = ({ children }: ActionProviderProps) => {
     }
   };
 
+  const validateDate = async (date: string) => {
+    const formDate = new Date(
+      date.replace(/\//g, '-').split('-').reverse().join('-')
+    );
+    const now = new Date();
+    const today = new Date(now.setDate(now.getDate() - 1));
+    const isPreviuosly = formDate < today;
+    if (isPreviuosly) {
+      showMessage({
+        message: 'Invalid date!',
+        description: 'The date must be greater than today!',
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'danger',
+      });
+
+      return false;
+    }
+
+    const holidays = await getHolidays(date);
+    const dateFormatted = date
+      .replace(/\//g, '-')
+      .split('-')
+      .reverse()
+      .join('-');
+
+    const holiday = holidays.find((holiday) => holiday.date === dateFormatted);
+
+    if (holiday) {
+      showMessage({
+        message: 'Invalid date!',
+        description: `${holiday?.name} is a holiday!`,
+        floating: true,
+        statusBarHeight: StatusBar.currentHeight,
+        type: 'danger',
+      });
+
+      return false;
+    }
+
+    return true;
+  };
+
   const contextValue = {
     actions,
     changeSortType,
@@ -135,6 +182,7 @@ const ActionProvider = ({ children }: ActionProviderProps) => {
     addAction,
     editAction,
     deleteAction,
+    validateDate,
   } as ActionContextData;
 
   return (

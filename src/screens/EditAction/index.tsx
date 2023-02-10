@@ -5,7 +5,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { StatusBar, Text } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { Masks } from 'react-native-mask-input';
-import { getHolidays } from '../../api';
 import { Loading } from '../../components/Loading';
 import { ActionType, useActionContext } from '../../contexts/ActionContext';
 import theme from '../../theme';
@@ -36,7 +35,8 @@ const EditAction = () => {
       },
     });
 
-  const { isLoading, editAction, getAction, setIsLoading } = useActionContext();
+  const { isLoading, editAction, getAction, setIsLoading, validateDate } =
+    useActionContext();
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
@@ -44,49 +44,6 @@ const EditAction = () => {
       title: actionToEdit?.name,
     });
   }, [navigation, actionToEdit]);
-
-  const validateDate = async (date: string) => {
-    const formDate = new Date(
-      date.replace(/\//g, '-').split('-').reverse().join('-')
-    );
-    const now = new Date();
-    const today = new Date(now.setDate(now.getDate() - 1));
-    const isPreviuosly = formDate < today;
-    if (isPreviuosly) {
-      showMessage({
-        message: 'Invalid date!',
-        description: 'The date must be greater than today!',
-        floating: true,
-        statusBarHeight: StatusBar.currentHeight,
-        type: 'danger',
-      });
-
-      return false;
-    }
-
-    const holidays = await getHolidays(date);
-    const dateFormatted = date
-      .replace(/\//g, '-')
-      .split('-')
-      .reverse()
-      .join('-');
-
-    const holiday = holidays.find((holiday) => holiday.date === dateFormatted);
-
-    if (holiday) {
-      showMessage({
-        message: 'Invalid date!',
-        description: `${holiday?.name} is a holiday!`,
-        floating: true,
-        statusBarHeight: StatusBar.currentHeight,
-        type: 'danger',
-      });
-
-      return false;
-    }
-
-    return true;
-  };
 
   const onSubmit = async ({ actionName, value, date }: FormData) => {
     const { dirtyFields } = formState;
