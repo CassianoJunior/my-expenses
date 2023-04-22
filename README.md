@@ -1,5 +1,5 @@
 # My Actions
-> Simple application to manage your finances
+> Simple application to manage your expenses
 
 # 🛠️Technologies
   - [React Native with EXPO](https://expo.dev)
