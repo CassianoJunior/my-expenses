@@ -1,4 +1,4 @@
-# My Actions
+# My Expenses
 > Simple application to manage your expenses
 
 # 🛠️Technologies
@@ -16,9 +16,9 @@
 [Video](https://youtu.be/JHAKZD1pUjU)
 
 # ✨Features
-  - Create new actions
-  - Edit your actions
-  - Delete actions
+  - Create new expenses
+  - Edit your expenses
+  - Delete expeses
   - Form validations (holidays and previous days are not a valid date)
   - Filter by date or value
   - Graphic (Date X Value)
